@@ -2,13 +2,15 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { useData } from '../context/DataContext';
 import { auth, db } from '../firebase';
 import Editor from './Editor';
 
 const Dashboard = () => {
   const [currentUser, setCurrentUser] = useState(null);
-  const [saas, setSaas] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const { saas, setSaas } = useData();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -170,13 +172,13 @@ const Dashboard = () => {
                 <h1>Tagline: {e.tagline}</h1>
                 <h1>Category: {e.category}</h1>
                 <button
-                  className="bg-red-200 rounded-lg p-1 w-16 self-end"
+                  className="bg-red-200 rounded-lg p-1 w-16 self-end focus:outline-none"
                   onClick={() => handleDelete(e.id)}
                 >
                   Delete
                 </button>
                 <button
-                  className="bg-red-200 rounded-lg p-1 self-end mt-4 w-16"
+                  className="bg-red-200 rounded-lg p-1 self-end mt-4 w-16  focus:outline-none"
                   onClick={() => handleUpdate(e.id)}
                 >
                   Edit
