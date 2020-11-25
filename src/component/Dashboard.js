@@ -123,6 +123,10 @@ const Dashboard = () => {
         <p></p>
         <button onClick={() => auth.signOut()}>Logout</button>
 
+        <h1 className="font-bold">
+         Search among <span className="text-red-300">{saas.length}</span> SaaS company in
+          our database
+        </h1>
         <div className="flex flex-col border-2 border-red-300 w-3/6 m-6 p-4">
           <h3 className="font-bold">Add new SaaS</h3>
           <p>Title:</p>
@@ -168,9 +172,12 @@ const Dashboard = () => {
                 key={e.id}
                 className="flex flex-col border-2 border-blue-500 m-6 w-3/6 p-2 rounded-lg"
               >
-                <h1>Title: {e.title}</h1>
-                <h1>Tagline: {e.tagline}</h1>
-                <h1>Category: {e.category}</h1>
+                <h1 className="font-bold block">Title: </h1>
+                <p>{e.title}</p>
+                <h1 className="font-bold">Tagline:</h1>
+                <p> {e.tagline}</p>
+                <h1 className="font-bold">Category:</h1>
+                <p> {e.category}</p>
                 <button
                   className="bg-red-200 rounded-lg p-1 w-16 self-end focus:outline-none"
                   onClick={() => handleDelete(e.id)}
