@@ -1,6 +1,6 @@
 import firebase from 'firebase/app';
 import React, { useState } from 'react';
-import { useData } from '../context/DataContext';
+import { useData } from '../contexts/DataContext';
 import { db } from '../firebase';
 
 const Editor = ({ e }) => {

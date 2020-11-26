@@ -1,14 +1,15 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { useData } from '../context/DataContext';
+import { useData } from '../contexts/DataContext';
 import { auth, db } from '../firebase';
 import Editor from './Editor';
 
 const Dashboard = () => {
   const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const { saas, setSaas } = useData();
 
@@ -63,6 +64,7 @@ const Dashboard = () => {
     //   setSaas(data);
     // }
     // getData();
+    setLoading(true);
     db.collection('saas')
       .orderBy('timestamp', 'desc')
       .onSnapshot((snapshot) => {
@@ -121,11 +123,11 @@ const Dashboard = () => {
       <div>
         {currentUser.email}
         <p></p>
-        <button onClick={() => auth.signOut()}>Logout</button>
-
+        <button onClick={() => auth.signOut()}>Logout</button>{' '}
+        <Link to="/update-profile">Update Profile</Link>
         <h1 className="font-bold">
-         Search among <span className="text-red-300">{saas.length}</span> SaaS company in
-          our database
+          Search among <span className="text-red-300">{saas.length}</span> SaaS
+          company in our database
         </h1>
         <div className="flex flex-col border-2 border-red-300 w-3/6 m-6 p-4">
           <h3 className="font-bold">Add new SaaS</h3>
@@ -162,7 +164,6 @@ const Dashboard = () => {
             Submit
           </button>
         </div>
-
         {saas.map((e) => {
           if (e.isEditable) {
             return <Editor key={() => uuidv4()} e={e} />;
