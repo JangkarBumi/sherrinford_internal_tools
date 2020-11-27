@@ -1,15 +1,19 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import { useAuth } from '../contexts/AuthContext';
 import { useData } from '../contexts/DataContext';
-import { auth, db } from '../firebase';
+import { db } from '../firebase';
 import Editor from './Editor';
 
 const Dashboard = () => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { currentUser, logout } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [addNewSaaS, setAddNewSaaS] = useState(false);
+  const history = useHistory();
 
   const { saas, setSaas } = useData();
 
@@ -42,21 +46,40 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setCurrentUser(user);
-    });
+    setLoading(true);
+    const unsubscribe = db
+      .collection('saas')
+      .orderBy('timestamp', 'desc')
+      .onSnapshot((snapshot) => {
+        if (snapshot.size) {
+          const list = [];
+          snapshot.forEach((doc) => {
+            const { title, tagline, category } = doc.data();
 
-    return unsubscribe;
-  }, []);
+            list.push({
+              id: doc.id,
+              title,
+              tagline,
+              category,
+              isEditable: false,
+            });
+          });
+          setSaas(list);
+          setLoading(false);
+        } else {
+          // it's empty
+          alert('fetch data failed!');
+          setLoading(false);
+        }
+      });
+    return () => unsubscribe();
 
-  useEffect(() => {
     // async function getData() {
     //   const snapshot = await db.collection('saas').get();
     //   if (snapshot.empty) {
     //     console.log('No matching documents.');
     //     return;
     //   }
-
     //   const data = [];
     //   snapshot.forEach((doc) => {
     //     data.push(doc.data());
@@ -64,29 +87,18 @@ const Dashboard = () => {
     //   setSaas(data);
     // }
     // getData();
-    setLoading(true);
-    db.collection('saas')
-      .orderBy('timestamp', 'desc')
-      .onSnapshot((snapshot) => {
-        const list = [];
-        snapshot.forEach((doc) => {
-          const { title, tagline, category } = doc.data();
-
-          list.push({
-            id: doc.id,
-            title,
-            tagline,
-            category,
-            isEditable: false,
-          });
-        });
-        setSaas(list);
-        setLoading(false);
-      });
   }, []);
 
-  const signin = (email, password) =>
-    auth.signInWithEmailAndPassword(email, password);
+  async function handleLogout() {
+    setError('');
+
+    try {
+      await logout();
+      history.push('/login');
+    } catch {
+      setError('Failed to log out');
+    }
+  }
 
   const handleDelete = async (docId) => {
     try {
@@ -115,55 +127,85 @@ const Dashboard = () => {
   };
 
   if (loading) {
-    return <h1>Loading...</h1>;
-  }
-
-  if (currentUser) {
     return (
       <div>
-        {currentUser.email}
-        <p></p>
-        <button onClick={() => auth.signOut()}>Logout</button>{' '}
+        <h1>Loading...</h1>
+        <button onClick={handleLogout}>Logout</button>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <p> {currentUser.email}</p>
+      <div className="flex flex-col">
+        <button className="self-start" onClick={handleLogout}>
+          Logout
+        </button>
         <Link to="/update-profile">Update Profile</Link>
-        <h1 className="font-bold">
-          Search among <span className="text-red-300">{saas.length}</span> SaaS
-          company in our database
-        </h1>
-        <div className="flex flex-col border-2 border-red-300 w-3/6 m-6 p-4">
-          <h3 className="font-bold">Add new SaaS</h3>
-          <p>Title:</p>
-          <input
-            className="border border-red-400 rounded-lg focus:outline-none"
-            type="text"
-            name="title"
-            value={title}
-            onChange={onChange}
-          />
+        <button
+          onClick={() => setAddNewSaaS(!addNewSaaS)}
+          className={
+            'block bg-red-200 rounded-lg p-1 mt-4 w-32  self-end focus:outline-none ' +
+            (addNewSaaS ? 'hidden' : 'block')
+          }
+        >
+          Add new SaaS
+        </button>
+      </div>
 
-          <p>Tagline:</p>
-          <input
-            className="border border-red-400 rounded-lg focus:outline-none"
-            type="text"
-            name="tagline"
-            value={tagline}
-            onChange={onChange}
-          />
+      <h1 className="font-bold">
+        Search among <span className="text-red-300">{saas.length}</span> SaaS
+        company in our database
+      </h1>
+      <div
+        className={
+          'flex-col border-2 border-red-300 w-3/6 m-6 p-4 ' +
+          (addNewSaaS ? 'block' : 'hidden')
+        }
+      >
+        <h3 className="font-bold">Add new SaaS</h3>
+        <p>Title:</p>
+        <input
+          className="border border-red-400 rounded-lg focus:outline-none"
+          type="text"
+          name="title"
+          value={title}
+          onChange={onChange}
+        />
 
-          <p>Category:</p>
-          <input
-            className="border border-red-400 rounded-lg focus:outline-none"
-            type="text"
-            name="category"
-            value={category}
-            onChange={onChange}
-          />
-          <button
-            onClick={onSubmit}
-            className="block bg-red-200 rounded-lg p-1 mt-4 w-3/6 self-center focus:outline-none"
-          >
-            Submit
-          </button>
-        </div>
+        <p>Tagline:</p>
+        <input
+          className="border border-red-400 rounded-lg focus:outline-none"
+          type="text"
+          name="tagline"
+          value={tagline}
+          onChange={onChange}
+        />
+
+        <p>Category:</p>
+        <input
+          className="border border-red-400 rounded-lg focus:outline-none"
+          type="text"
+          name="category"
+          value={category}
+          onChange={onChange}
+        />
+        <button
+          onClick={onSubmit}
+          className="block bg-red-200 rounded-lg p-1 mt-4 w-3/6 self-center focus:outline-none"
+        >
+          Submit
+        </button>
+
+        <button
+          onClick={() => setAddNewSaaS(!addNewSaaS)}
+          className="block bg-red-200 rounded-lg p-1 mt-4 w-3/6 self-center focus:outline-none"
+        >
+          Cancel
+        </button>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {saas.map((e) => {
           if (e.isEditable) {
             return <Editor key={() => uuidv4()} e={e} />;
@@ -171,7 +213,7 @@ const Dashboard = () => {
             return (
               <div
                 key={e.id}
-                className="flex flex-col border-2 border-blue-500 m-6 w-3/6 p-2 rounded-lg"
+                className="flex flex-col border-2 border-blue-500 m-6 p-2 rounded-lg"
               >
                 <h1 className="font-bold block">Title: </h1>
                 <p>{e.title}</p>
@@ -179,6 +221,7 @@ const Dashboard = () => {
                 <p> {e.tagline}</p>
                 <h1 className="font-bold">Category:</h1>
                 <p> {e.category}</p>
+                <p> {e.link}</p>
                 <button
                   className="bg-red-200 rounded-lg p-1 w-16 self-end focus:outline-none"
                   onClick={() => handleDelete(e.id)}
@@ -196,14 +239,6 @@ const Dashboard = () => {
           }
         })}
       </div>
-    );
-  }
-
-  return (
-    <div>
-      <button onClick={() => signin('zehairawan@gmail.com', '001212mn')}>
-        Login
-      </button>
     </div>
   );
 };

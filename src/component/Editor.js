@@ -33,6 +33,22 @@ const Editor = ({ e }) => {
     setSaas(newSaas);
   };
 
+  const handleCancel = (id) => {
+    const newSaas = saas.map((item) => {
+      if (item.id === id) {
+        const updatedItem = {
+          ...item,
+          isEditable: !item.isEditable,
+        };
+
+        return updatedItem;
+      }
+
+      return item;
+    });
+    setSaas(newSaas);
+  };
+
   const [formData, setFormData] = useState({
     title: e.title,
     tagline: e.tagline,
@@ -45,7 +61,7 @@ const Editor = ({ e }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   return (
-    <div className="flex flex-col border-2 border-blue-500 m-6 w-3/6 p-2 rounded-lg">
+    <div className="flex flex-col border-2 border-blue-500 m-6 p-2 rounded-lg">
       <h1>Title:</h1>
       <input
         name="title"
@@ -74,6 +90,18 @@ const Editor = ({ e }) => {
         className="block bg-red-200 rounded-lg p-1 mt-4 w-3/6 self-center focus:outline-none"
       >
         Save
+      </button>
+      <button
+        // onClick={onSubmit}
+        className="block bg-red-200 rounded-lg p-1 mt-4 w-3/6 self-center focus:outline-none"
+      >
+        Add new field
+      </button>
+      <button
+        onClick={() => handleCancel(e.id)}
+        className="block bg-red-200 rounded-lg p-1 mt-4 w-3/6 self-center focus:outline-none"
+      >
+        Cancel
       </button>
     </div>
   );
