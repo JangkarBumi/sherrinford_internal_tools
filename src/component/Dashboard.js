@@ -1,19 +1,17 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { useAuth } from '../contexts/AuthContext';
 import { useData } from '../contexts/DataContext';
 import { db } from '../firebase';
 import Editor from './Editor';
 
 const Dashboard = () => {
-  const { currentUser, logout } = useAuth();
+  // const { currentUser } = useAuth();
+
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [addNewSaaS, setAddNewSaaS] = useState(false);
-  const history = useHistory();
 
   const { saas, setSaas } = useData();
 
@@ -21,9 +19,11 @@ const Dashboard = () => {
     title: '',
     tagline: '',
     category: '',
+    link: '',
+    competitors: '',
   });
 
-  const { title, tagline, category } = formData;
+  const { title, tagline, category, link, competitors } = formData;
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -36,12 +36,21 @@ const Dashboard = () => {
         title,
         tagline,
         category,
+        link,
+        competitors,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       });
     } catch (error) {
       console.log(error);
     }
-    setFormData({ ...formData, title: '', tagline: '', category: '' });
+    setFormData({
+      ...formData,
+      title: '',
+      tagline: '',
+      category: '',
+      link: '',
+      competitors: '',
+    });
     // alert('Added!');
   };
 
@@ -54,13 +63,15 @@ const Dashboard = () => {
         if (snapshot.size) {
           const list = [];
           snapshot.forEach((doc) => {
-            const { title, tagline, category } = doc.data();
+            const { title, tagline, category, link, competitors } = doc.data();
 
             list.push({
               id: doc.id,
               title,
               tagline,
               category,
+              link,
+              competitors,
               isEditable: false,
             });
           });
@@ -88,17 +99,6 @@ const Dashboard = () => {
     // }
     // getData();
   }, []);
-
-  async function handleLogout() {
-    setError('');
-
-    try {
-      await logout();
-      history.push('/login');
-    } catch {
-      setError('Failed to log out');
-    }
-  }
 
   const handleDelete = async (docId) => {
     try {
@@ -130,19 +130,13 @@ const Dashboard = () => {
     return (
       <div>
         <h1>Loading...</h1>
-        <button onClick={handleLogout}>Logout</button>
       </div>
     );
   }
 
   return (
     <div>
-      <p> {currentUser.email}</p>
       <div className="flex flex-col">
-        <button className="self-start" onClick={handleLogout}>
-          Logout
-        </button>
-        <Link to="/update-profile">Update Profile</Link>
         <button
           onClick={() => setAddNewSaaS(!addNewSaaS)}
           className={
@@ -191,6 +185,25 @@ const Dashboard = () => {
           value={category}
           onChange={onChange}
         />
+
+        <p>Link:</p>
+        <input
+          className="border border-red-400 rounded-lg focus:outline-none"
+          type="text"
+          name="link"
+          value={link}
+          onChange={onChange}
+        />
+
+        <p>Competitors:</p>
+        <input
+          className="border border-red-400 rounded-lg focus:outline-none"
+          type="text"
+          name="competitors"
+          value={competitors}
+          onChange={onChange}
+        />
+
         <button
           onClick={onSubmit}
           className="block bg-red-200 rounded-lg p-1 mt-4 w-3/6 self-center focus:outline-none"
@@ -216,24 +229,38 @@ const Dashboard = () => {
                 className="flex flex-col border-2 border-blue-500 m-6 p-2 rounded-lg"
               >
                 <h1 className="font-bold block">Title: </h1>
-                <p>{e.title}</p>
+                <a href={e.link} target="blank">
+                  {e.title}*
+                </a>
+
                 <h1 className="font-bold">Tagline:</h1>
                 <p> {e.tagline}</p>
                 <h1 className="font-bold">Category:</h1>
                 <p> {e.category}</p>
-                <p> {e.link}</p>
-                <button
-                  className="bg-red-200 rounded-lg p-1 w-16 self-end focus:outline-none"
-                  onClick={() => handleDelete(e.id)}
-                >
-                  Delete
-                </button>
-                <button
-                  className="bg-red-200 rounded-lg p-1 self-end mt-4 w-16  focus:outline-none"
-                  onClick={() => handleUpdate(e.id)}
-                >
-                  Edit
-                </button>
+
+                <div className="flex justify-between">
+                  <Link
+                    to={`/post/${e.title.toLowerCase()}`}
+                    className=" block bg-blue-200 rounded-lg  w-18 h-3/6 p-2 focus:outline-none"
+                  >
+                    View Analysis
+                  </Link>
+
+                  <div className="flex flex-col">
+                    <button
+                      className="bg-red-200 rounded-lg p-2 w-16 focus:outline-none"
+                      onClick={() => handleDelete(e.id)}
+                    >
+                      Delete
+                    </button>
+                    <button
+                      className="bg-red-200 rounded-lg p-2  mt-4 w-16  focus:outline-none"
+                      onClick={() => handleUpdate(e.id)}
+                    >
+                      Edit
+                    </button>
+                  </div>
+                </div>
               </div>
             );
           }

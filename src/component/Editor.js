@@ -24,12 +24,19 @@ const Editor = ({ e }) => {
         title,
         tagline,
         category,
+        link,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       });
     } catch (error) {
       console.log(error);
     }
-    setFormData({ ...formData, title: '', tagline: '', category: '' });
+    setFormData({
+      ...formData,
+      title: '',
+      tagline: '',
+      category: '',
+      link: '',
+    });
     setSaas(newSaas);
   };
 
@@ -49,13 +56,15 @@ const Editor = ({ e }) => {
     setSaas(newSaas);
   };
 
+  const inputFields = ['title', 'tagline', 'category', 'link'];
   const [formData, setFormData] = useState({
     title: e.title,
     tagline: e.tagline,
     category: e.category,
+    link: e.link,
   });
 
-  const { title, tagline, category } = formData;
+  const { title, tagline, category, link } = formData;
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -85,18 +94,22 @@ const Editor = ({ e }) => {
         value={category}
         onChange={onChange}
       />
+
+      <h1>Link</h1>
+      <input
+        name="link"
+        className="border border-red-400 rounded-lg focus:outline-none px-4 py-1"
+        value={link}
+        onChange={onChange}
+      />
+
       <button
         onClick={() => handleSave(e.id)}
         className="block bg-red-200 rounded-lg p-1 mt-4 w-3/6 self-center focus:outline-none"
       >
         Save
       </button>
-      <button
-        // onClick={onSubmit}
-        className="block bg-red-200 rounded-lg p-1 mt-4 w-3/6 self-center focus:outline-none"
-      >
-        Add new field
-      </button>
+
       <button
         onClick={() => handleCancel(e.id)}
         className="block bg-red-200 rounded-lg p-1 mt-4 w-3/6 self-center focus:outline-none"

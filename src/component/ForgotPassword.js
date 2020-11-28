@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function ForgotPassword() {
   const emailRef = useRef();
@@ -30,13 +30,13 @@ export default function ForgotPassword() {
       <div>
         <div>
           <h2 className="text-center mb-4">Password Reset</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
-          {message && <Alert variant="success">{message}</Alert>}
+          {error && <span variant="danger">{error}</span>}
+          {message && <span variant="success">{message}</span>}
           <form onSubmit={handleSubmit}>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={emailRef} required />
-            </Form.Group>
+            <div id="email">
+              <div>Email</div>
+              <div type="email" ref={emailRef} required />
+            </div>
             <button disabled={loading} className="w-100" type="submit">
               Reset Password
             </button>

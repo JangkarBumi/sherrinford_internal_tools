@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
 import { Link, useHistory } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Signup() {
   const emailRef = useRef();
@@ -35,24 +35,24 @@ export default function Signup() {
       <div>
         <div>
           <h2 className="text-center mb-4">Sign Up</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={emailRef} required />
-            </Form.Group>
-            <Form.Group id="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" ref={passwordRef} required />
-            </Form.Group>
-            <Form.Group id="password-confirm">
-              <Form.Label>Password Confirmation</Form.Label>
-              <Form.Control type="password" ref={passwordConfirmRef} required />
-            </Form.Group>
+          {error && <span variant="danger">{error}</span>}
+          <div onSubmit={handleSubmit}>
+            <div id="email">
+              <p>Email</p>
+              <input type="email" ref={emailRef} required />
+            </div>
+            <div id="password">
+              <p>Password</p>
+              <input type="password" ref={passwordRef} required />
+            </div>
+            <div id="password-confirm">
+              <p>Password Confirmation</p>
+              <input type="password" ref={passwordConfirmRef} required />
+            </div>
             <button disabled={loading} className="w-100" type="submit">
               Sign Up
             </button>
-          </Form>
+          </div>
         </div>
       </div>
       <div className="w-100 text-center mt-2">
