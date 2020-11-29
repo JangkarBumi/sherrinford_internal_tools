@@ -8,10 +8,13 @@ export function useData() {
 
 export function DataProvider({ children }) {
   const [saas, setSaas] = useState();
+  const [postId,setPostId] = useState()
 
   const value = {
     saas,
     setSaas,
+    postId,
+    setPostId
   };
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

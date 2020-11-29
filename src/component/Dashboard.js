@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { useData } from '../contexts/DataContext';
+import { useEditor } from '../contexts/EditorContext';
 import { db } from '../firebase';
 import Editor from './Editor';
 
@@ -13,7 +14,8 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [addNewSaaS, setAddNewSaaS] = useState(false);
 
-  const { saas, setSaas } = useData();
+  const { saas, setSaas, setPostId } = useData();
+  const { setPostData } = useEditor();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -39,6 +41,7 @@ const Dashboard = () => {
         link,
         competitors,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        analysis: false,
       });
     } catch (error) {
       console.log(error);
@@ -63,7 +66,14 @@ const Dashboard = () => {
         if (snapshot.size) {
           const list = [];
           snapshot.forEach((doc) => {
-            const { title, tagline, category, link, competitors } = doc.data();
+            const {
+              title,
+              tagline,
+              category,
+              link,
+              competitors,
+              analysis,
+            } = doc.data();
 
             list.push({
               id: doc.id,
@@ -73,6 +83,7 @@ const Dashboard = () => {
               link,
               competitors,
               isEditable: false,
+              analysis,
             });
           });
           setSaas(list);
@@ -238,17 +249,37 @@ const Dashboard = () => {
                 <h1 className="font-bold">Category:</h1>
                 <p> {e.category}</p>
 
-                <div className="flex justify-between">
-                  <Link
-                    to={`/post/${e.title.toLowerCase()}`}
-                    className=" block bg-blue-200 rounded-lg  w-18 h-3/6 p-2 focus:outline-none"
-                  >
-                    View Analysis
-                  </Link>
+                <div className="flex justify-between mt-4">
+                  {e.analysis ? (
+                    <Link
+                      to="/edit-analysis"
+                      // onClick={() => {
+                      //   setDocId(e.analysis);
+                      // }}
+                      className=" block bg-yellow-200 rounded-lg  w-18 h-3/6 p-2 focus:outline-none"
+                    >
+                      Edit Analysis
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/create-analysis"
+                      onClick={() => setPostData({ id: e.id, title: e.title })}
+                      className=" block bg-blue-200 rounded-lg  w-18 h-10 p-2 focus:outline-none"
+                    >
+                      Write Analysis
+                    </Link>
+                  )}
 
                   <div className="flex flex-col">
+                    <Link
+                      onClick={() => setPostId(e.id)}
+                      to={`/post/${e.title.toLowerCase()}`}
+                      className=" block h-4 bg-green-200 rounded-lg  w-18 h-3/6 p-2  focus:outline-none"
+                    >
+                      View Analysis
+                    </Link>
                     <button
-                      className="bg-red-200 rounded-lg p-2 w-16 focus:outline-none"
+                      className="bg-red-200 rounded-lg p-2 w-16 mt-4 focus:outline-none"
                       onClick={() => handleDelete(e.id)}
                     >
                       Delete

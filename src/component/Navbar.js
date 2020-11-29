@@ -22,10 +22,12 @@ const Navbar = () => {
     <div className="flex justify-between">
       <Link to="/">Homepage</Link>
       <Link to="/blog">Blog</Link>
+      <Link to="/writeblogpost">Write BlogPost</Link>
+      <Link to="/writeanalysis">Write Analysis</Link>
 
-      <p> Welcome, {currentUser.email}</p>
+      {/* <p> Welcome, {currentUser.email}</p> */}
 
-      <Link to="/update-profile">Update Profile</Link>
+      {/* <Link to="/update-profile">Update Profile</Link> */}
 
       <button className="self-start" onClick={handleLogout}>
         Logout
