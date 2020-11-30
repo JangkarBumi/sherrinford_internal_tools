@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import { db } from '../firebase';
+import { Link } from 'react-router-dom';
+import { db } from '../../firebase';
 
 const Blog = () => {
   const [blogPost, setBlogPost] = useState([]);
@@ -12,8 +12,8 @@ const Blog = () => {
 
         const holder = [];
         res.forEach((doc) => {
-          const { content } = doc.data();
-          holder.push({ id: doc.id, content });
+          const { content, title, slug, image } = doc.data();
+          holder.push({ id: doc.id, title, content, slug, image });
         });
 
         setBlogPost(holder);
@@ -38,22 +38,20 @@ const Blog = () => {
   // ];
 
   return (
-    <div>
+    <div className="flex flex-col">
       {blogPost.map((post) => {
         return (
-          <ReactMarkdown
-            key={post.id}
-            className="prose border border-gray-500"
-            source={post.content}
-          ></ReactMarkdown>
-          //  <div className="border border-red-200 h-52" key={post.id}>
-          //  <img className="w-2/6" src={post.image} alt="" />
-          //   <h1>{post.title}</h1>
+          // <ReactMarkdown
+          //   key={post.id}
+          //   className="prose border border-gray-500"
+          //   source={post.content}
+          // ></ReactMarkdown>
+          <div className="border border-red-200 mt-6" key={post.id}>
+            <h1>{post.title}</h1>
+            <img className="block w-2/6" src={post.image} alt="" />
 
-          //   <Link to={`/blog/${post.title.split(' ').join('-')}`}>
-          //     Read Article
-          //   </Link>
-          //  </div>
+            <Link to={`/blog/${post.slug}`}>Read Article</Link>
+          </div>
         );
       })}
     </div>

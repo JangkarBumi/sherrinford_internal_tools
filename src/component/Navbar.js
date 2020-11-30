@@ -22,7 +22,7 @@ const Navbar = () => {
     <div className="flex justify-between">
       <Link to="/">Homepage</Link>
       <Link to="/blog">Blog</Link>
-      <Link to="/writeblogpost">Write BlogPost</Link>
+      <Link to="/create-blogpost">Manage Blogpost</Link>
       <Link to="/writeanalysis">Write Analysis</Link>
 
       {/* <p> Welcome, {currentUser.email}</p> */}
