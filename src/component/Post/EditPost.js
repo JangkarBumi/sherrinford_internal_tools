@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useEditor } from '../../contexts/EditorContext';
 import { db } from '../../firebase';
 
-const EditAnalysis = () => {
+const EditPost = () => {
   const [content, setContent] = useState('');
 
   const { docId } = useEditor();
 
   useEffect(() => {
     const getData = () => {
-      db.collection('analysis')
+      db.collection('post')
         .doc(docId)
         .get()
         .then(function (doc) {
@@ -29,7 +29,7 @@ const EditAnalysis = () => {
 
   const handleSubmit = async () => {
     try {
-      await db.collection('analysis').doc(docId).update({
+      await db.collection('post').doc(docId).update({
         content,
       });
     } catch (error) {
@@ -56,4 +56,4 @@ const EditAnalysis = () => {
   );
 };
 
-export default EditAnalysis;
+export default EditPost;

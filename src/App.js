@@ -1,17 +1,17 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
-import CreateAnalysis from './component/Analysis/CreateAnalysis';
-import EditAnalysis from './component/Analysis/EditAnalysis';
-import Post from './component/Analysis/Post';
-import Blog from './component/Blogpost/Blog';
-import Blogpost from './component/Blogpost/Blogpost';
-import CreateBlogpost from './component/Blogpost/CreateBlogpost';
-import EditBlogpost from './component/Blogpost/EditBlogpost';
+import Blog from './component/Blog/Blog';
+import Blogpost from './component/Blog/Blogpost';
+import CreateBlogpost from './component/Blog/CreateBlogpost';
+import EditBlogpost from './component/Blog/EditBlogpost';
 import Dashboard from './component/Dashboard';
 import ForgotPassword from './component/ForgotPassword';
 import Login from './component/Login';
 import Navbar from './component/Navbar';
+import CreatePost from './component/Post/CreatePost';
+import EditPost from './component/Post/EditPost';
+import Post from './component/Post/Post';
 import PrivateRoute from './component/PrivateRoute';
 import Signup from './component/Signup';
 import UpdateProfile from './component/UpdateProfile';
@@ -40,8 +40,8 @@ function App() {
                   path="/edit-blogpost/:blogPostId"
                   component={EditBlogpost}
                 />
-                <Route path="/create-analysis" component={CreateAnalysis} />
-                <Route path="/edit-analysis" component={EditAnalysis} />
+                <Route path="/create-post" component={CreatePost} />
+                <Route path="/edit-post" component={EditPost} />
                 <Route path="/forgot-password" component={ForgotPassword} />
                 <Route exact path="/blog" component={Blog} />
                 <Route exact path="/blog/:slugId" component={Blogpost} />

@@ -23,7 +23,7 @@ const Navbar = () => {
       <Link to="/">Homepage</Link>
       <Link to="/blog">Blog</Link>
       <Link to="/create-blogpost">Manage Blogpost</Link>
-      <Link to="/writeanalysis">Write Analysis</Link>
+      <Link to="/create-post">Manage Post</Link>
 
       {/* <p> Welcome, {currentUser.email}</p> */}
 

@@ -41,7 +41,7 @@ const Dashboard = () => {
         link,
         competitors,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        analysis: false,
+        details: '',
       });
     } catch (error) {
       console.log(error);
@@ -250,34 +250,16 @@ const Dashboard = () => {
                 <p> {e.category}</p>
 
                 <div className="flex justify-between mt-4">
-                  {e.analysis ? (
-                    <Link
-                      to="/edit-analysis"
-                      // onClick={() => {
-                      //   setDocId(e.analysis);
-                      // }}
-                      className=" block bg-yellow-200 rounded-lg  w-18 h-3/6 p-2 focus:outline-none"
-                    >
-                      Edit Analysis
-                    </Link>
-                  ) : (
-                    <Link
-                      to="/create-analysis"
-                      onClick={() => setPostData({ id: e.id, title: e.title })}
-                      className=" block bg-blue-200 rounded-lg  w-18 h-10 p-2 focus:outline-none"
-                    >
-                      Write Analysis
-                    </Link>
-                  )}
-
                   <div className="flex flex-col">
-                    <Link
-                      onClick={() => setPostId(e.id)}
-                      to={`/post/${e.title.toLowerCase()}`}
-                      className=" block h-4 bg-green-200 rounded-lg  w-18 h-3/6 p-2  focus:outline-none"
-                    >
-                      View Analysis
-                    </Link>
+                    {e.details ? (
+                      <Link
+                        onClick={() => setPostId(e.id)}
+                        to={`/post/${e.title.toLowerCase()}`}
+                        className=" block h-4 bg-green-200 rounded-lg  w-18 h-3/6 p-2  focus:outline-none"
+                      >
+                        View Details
+                      </Link>
+                    ) : null}
                     <button
                       className="bg-red-200 rounded-lg p-2 w-16 mt-4 focus:outline-none"
                       onClick={() => handleDelete(e.id)}
