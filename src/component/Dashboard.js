@@ -23,9 +23,10 @@ const Dashboard = () => {
     category: '',
     link: '',
     competitors: '',
+    pricing:''
   });
 
-  const { title, tagline, category, link, competitors } = formData;
+  const { title, tagline, category, link, competitors ,pricing} = formData;
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -42,6 +43,7 @@ const Dashboard = () => {
         competitors,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         details: '',
+        pricing
       });
     } catch (error) {
       console.log(error);
@@ -53,6 +55,7 @@ const Dashboard = () => {
       category: '',
       link: '',
       competitors: '',
+      pricing:''
     });
     // alert('Added!');
   };
@@ -72,7 +75,8 @@ const Dashboard = () => {
               category,
               link,
               competitors,
-              analysis,
+              details,
+              pricing
             } = doc.data();
 
             list.push({
@@ -83,7 +87,8 @@ const Dashboard = () => {
               link,
               competitors,
               isEditable: false,
-              analysis,
+              details,
+              pricing
             });
           });
           setSaas(list);
@@ -240,12 +245,16 @@ const Dashboard = () => {
                 className="flex flex-col border-2 border-blue-500 m-6 p-2 rounded-lg"
               >
                 <h1 className="font-bold block">Title: </h1>
-                <a href={e.link} target="blank">
+                <a href={e.link} target="_blank">
                   {e.title}*
                 </a>
 
                 <h1 className="font-bold">Tagline:</h1>
                 <p> {e.tagline}</p>
+
+                <h1 className="font-bold">Pricing:</h1>
+                <p> {e.pricing}</p>
+
                 <h1 className="font-bold">Category:</h1>
                 <p> {e.category}</p>
 
@@ -254,7 +263,10 @@ const Dashboard = () => {
                     {e.details ? (
                       <Link
                         onClick={() => setPostId(e.id)}
-                        to={`/post/${e.title.toLowerCase()}`}
+                        to={`/post/${e.title
+                          .split(' ')
+                          .join('')
+                          .toLowerCase()}`}
                         className=" block h-4 bg-green-200 rounded-lg  w-18 h-3/6 p-2  focus:outline-none"
                       >
                         View Details

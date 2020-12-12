@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useEditor } from '../../contexts/EditorContext';
 import { db } from '../../firebase';
 
-const EditPost = () => {
+const EditDetail = () => {
   const [content, setContent] = useState('');
 
   const { docId } = useEditor();
@@ -56,4 +56,4 @@ const EditPost = () => {
   );
 };
 
-export default EditPost;
+export default EditDetail;

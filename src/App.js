@@ -9,9 +9,9 @@ import Dashboard from './component/Dashboard';
 import ForgotPassword from './component/ForgotPassword';
 import Login from './component/Login';
 import Navbar from './component/Navbar';
-import CreatePost from './component/Post/CreatePost';
-import EditPost from './component/Post/EditPost';
-import Post from './component/Post/Post';
+import CreateDetail from './component/Detail/CreateDetail';
+import EditDetail from './component/Detail/EditDetail';
+import Detail from './component/Detail/Detail';
 import PrivateRoute from './component/PrivateRoute';
 import Signup from './component/Signup';
 import UpdateProfile from './component/UpdateProfile';
@@ -40,12 +40,12 @@ function App() {
                   path="/edit-blogpost/:blogPostId"
                   component={EditBlogpost}
                 />
-                <Route path="/create-post" component={CreatePost} />
-                <Route path="/edit-post" component={EditPost} />
+                <Route path="/create-detail" component={CreateDetail} />
+                <Route path="/edit-detail" component={EditDetail} />
                 <Route path="/forgot-password" component={ForgotPassword} />
                 <Route exact path="/blog" component={Blog} />
                 <Route exact path="/blog/:slugId" component={Blogpost} />
-                <Route exact path="/post/:postId" component={Post} />
+                <Route exact path="/post/:slugId" component={Detail} />
               </Switch>
             </EditorProvider>
           </DataProvider>

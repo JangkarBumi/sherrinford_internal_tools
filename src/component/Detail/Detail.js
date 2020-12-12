@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../../firebase';
 
-const Post = ({ match }) => {
+const Detail = ({ match }) => {
   const [content, setContent] = useState();
 
   useEffect(() => {
     const getData = () => {
-      db.collection('analysis')
-        .where('title', '==', match.params.postId)
+      db.collection('post')
+        .where('slug', '==', match.params.slugId)
         .get()
         .then((snapshot) => {
           snapshot.forEach((doc) => {
@@ -21,4 +21,4 @@ const Post = ({ match }) => {
   return <div>{content}</div>;
 };
 
-export default Post;
+export default Detail;

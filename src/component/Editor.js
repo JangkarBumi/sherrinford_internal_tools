@@ -20,12 +20,22 @@ const Editor = ({ e }) => {
       return item;
     });
     try {
+      let parsedPricing;
+      if (pricing.length < 5) {
+        // check if pricing is a number or not
+        parsedPricing = parseInt(pricing);
+      } else {
+        parsedPricing = pricing;
+      }
+
+      console.log(pricing);
       await db.collection('saas').doc(id).update({
         title,
         tagline,
         category,
         link,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        pricing: parsedPricing,
       });
     } catch (error) {
       console.log(error);
@@ -36,6 +46,7 @@ const Editor = ({ e }) => {
       tagline: '',
       category: '',
       link: '',
+      pricing: '',
     });
     setSaas(newSaas);
   };
@@ -56,15 +67,16 @@ const Editor = ({ e }) => {
     setSaas(newSaas);
   };
 
-  const inputFields = ['title', 'tagline', 'category', 'link'];
+  const inputFields = ['title', 'tagline', 'category', 'link', 'pricing'];
   const [formData, setFormData] = useState({
     title: e.title,
     tagline: e.tagline,
     category: e.category,
     link: e.link,
+    pricing: e.pricing,
   });
 
-  const { title, tagline, category, link } = formData;
+  const { title, tagline, category, link, pricing } = formData;
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -100,6 +112,14 @@ const Editor = ({ e }) => {
         name="link"
         className="border border-red-400 rounded-lg focus:outline-none px-4 py-1"
         value={link}
+        onChange={onChange}
+      />
+
+      <h1>Pricing</h1>
+      <input
+        name="pricing"
+        className="border border-red-400 rounded-lg focus:outline-none px-4 py-1"
+        value={pricing}
         onChange={onChange}
       />
 
