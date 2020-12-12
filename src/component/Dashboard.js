@@ -211,6 +211,17 @@ const Dashboard = () => {
           onChange={onChange}
         />
 
+
+
+        <p>Pricing:</p>
+        <input
+          className="border border-red-400 rounded-lg focus:outline-none"
+          type="text"
+          name="pricing"
+          value={pricing}
+          onChange={onChange}
+        />
+
         <p>Competitors:</p>
         <input
           className="border border-red-400 rounded-lg focus:outline-none"

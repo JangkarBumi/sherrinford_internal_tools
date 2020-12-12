@@ -28,7 +28,7 @@ const Editor = ({ e }) => {
         parsedPricing = pricing;
       }
 
-      console.log(pricing);
+ 
       await db.collection('saas').doc(id).update({
         title,
         tagline,
